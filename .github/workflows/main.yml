@@ -1,0 +1,20 @@
+on: [push]
+
+jobs:
+  your_job:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Microsoft ODBC Driver for SQL Server
+      run: |
+        sudo su
+        curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+        curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list
+        sudo apt-get update
+        sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
+        # Optional: for bcp and sqlcmd
+        sudo ACCEPT_EULA=Y apt-get install -y mssql-tools
+        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+        source ~/.bashrc
+        # Optional: for unixODBC development headers
+        sudo apt-get install -y unixodbc-dev
